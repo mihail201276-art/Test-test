@@ -84,7 +84,7 @@ class Gui:
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption("Balls")
         self.clock = pygame.time.Clock()
-        self.font = pygame.font.SysFont("segoeui", 20)
+        self.font = pygame.font.SysFont(self._pick_font_name(), 20)
         self.overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
 
         self.carried = None
@@ -95,6 +95,13 @@ class Gui:
 
         for _ in range(START_BALLS):
             self._spawn_random_ball()
+
+    def _pick_font_name(self) -> str:
+        available = {name.lower() for name in pygame.font.get_fonts()}
+        for candidate in ("segoeui", "dejavusans", "arial", "freesans"):
+            if candidate in available:
+                return candidate
+        return pygame.font.get_default_font()
 
     def _spawn_random_ball(self) -> None:
         radius = random.uniform(12.0, 18.0)
