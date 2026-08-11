@@ -21,17 +21,13 @@ def _hsv_to_rgb(h: float, s: float, v: float) -> Color:
     return int(round(r * 255)), int(round(g * 255)), int(round(b * 255))
 
 
-def _shortest_arc(a: float, b: float) -> float:
-    diff = (b - a) % 1.0
-    return a + diff if diff <= 0.5 else a + (diff - 1.0)
-
-
 def mix_colors(a: Color, b: Color) -> Color:
     ha, sa, va = _rgb_to_hsv(a)
     hb, sb, vb = _rgb_to_hsv(b)
 
-    mixed_h = _shortest_arc(ha, hb) % 1.0
-    hue_gap = min((ha - hb) % 1.0, (hb - ha) % 1.0)
+    signed = (hb - ha + 0.5) % 1.0 - 0.5
+    mixed_h = (ha + signed / 2) % 1.0
+    hue_gap = abs(signed)
     saturation = max(0.0, min(sa, sb) - hue_gap * 0.5)
     value = max(va, vb)
 
